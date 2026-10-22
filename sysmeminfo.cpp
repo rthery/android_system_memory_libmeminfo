@@ -325,8 +325,8 @@ bool ReadPerProcessGpuMem([[maybe_unused]] std::unordered_map<uint32_t, uint64_t
     static constexpr const char kBpfGpuMemTotalMap[] = "/sys/fs/bpf/map_gpu_mem_gpu_mem_total_map";
 
     // Use the read-only wrapper BpfMapRO to properly retrieve the read-only map.
-    auto map = bpf::BpfMapRO<uint64_t, uint64_t>(kBpfGpuMemTotalMap);
-    if (!map.isValid()) {
+    bpf::BpfMapRO<uint64_t, uint64_t> map;
+    if (!map.init(kBpfGpuMemTotalMap).ok()) {
         LOG(ERROR) << "Can't open file: " << kBpfGpuMemTotalMap;
         return false;
     }
@@ -379,8 +379,8 @@ bool ReadProcessGpuUsageKb([[maybe_unused]] uint32_t pid, [[maybe_unused]] uint3
     uint64_t kBpfKeyGpuUsage = ((uint64_t)gpu_id << 32) | pid;
 
     // Use the read-only wrapper BpfMapRO to properly retrieve the read-only map.
-    auto map = bpf::BpfMapRO<uint64_t, uint64_t>(kBpfGpuMemTotalMap);
-    if (!map.isValid()) {
+    bpf::BpfMapRO<uint64_t, uint64_t> map;
+    if (!map.init(kBpfGpuMemTotalMap).ok()) {
         LOG(ERROR) << "Can't open file: " << kBpfGpuMemTotalMap;
         return false;
     }
